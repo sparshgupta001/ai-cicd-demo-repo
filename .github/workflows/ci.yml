@@ -28,7 +28,7 @@ jobs:
       - name: Notify backend on failure
         if: failure()
         run: |
-          curl -X POST "http://YOUR_BACKEND_URL/api/webhook" \
+          curl -X POST "https://4532-45-112-138-10.ngrok-free.app/api/webhook" \
             -H "Content-Type: application/json" \
             -d '{
               "source": "github",
