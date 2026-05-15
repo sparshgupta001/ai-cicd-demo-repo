@@ -23,9 +23,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Backend
+      - name: Run Tests
         run: |
-          python app.py > logs.txt 2>&1
+          pytest > logs.txt 2>&1
 
       - name: Notify AI Diagnosis Backend
         if: failure()
