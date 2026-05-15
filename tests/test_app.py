@@ -6,4 +6,4 @@ def test_calculate_total_adds_two_numbers():
 
 
 def test_calculate_total_adds_two_numbers():
-    assert calculate_total(3, 3) == 6  
+    assert calculate_total(4, 4) == 8  
