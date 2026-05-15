@@ -6,7 +6,6 @@ app = Flask(__name__)
 def home():
     return "Backend Running"
 
-# FORCE FAILURE
 raise Exception("Intentional CI/CD Failure")
 
 if __name__ == "__main__":
