@@ -27,9 +27,14 @@ jobs:
         run: |
           python app.py > logs.txt 2>&1
 
-      - name: Send Logs to Analyzer
+      - name: Notify AI Diagnosis Backend
         if: failure()
         run: |
-          curl -X POST  https://entryway-calculate-visibly.ngrok-free.dev/analyze \
-          -H "Content-Type: text/plain" \
-          --data-binary @logs.txt
+        curl -X POST https://4532-45-112-138-10.ngrok-free.app/api/webhook \
+        -H "Content-Type: application/json" \
+        -d '{
+        "source": "github",
+        "repo": "${{ github.repository }}",
+        "run_id": "${{ github.run_id }}",
+        "ref": "${{ github.ref_name }}"
+        }'

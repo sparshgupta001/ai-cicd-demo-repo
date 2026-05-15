@@ -2,17 +2,21 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route("/analyze", methods=["POST"])
-def analyze():
+@app.route("/api/webhook", methods=["POST"])
+def webhook():
 
-    logs = request.data.decode()
+    data = request.json
 
-    print("\\n===== RECEIVED LOGS =====\\n")
-    print(logs)
+    print("\n===== GITHUB WEBHOOK RECEIVED =====\n")
+
+    print("Source:", data.get("source"))
+    print("Repository:", data.get("repo"))
+    print("Run ID:", data.get("run_id"))
+    print("Branch:", data.get("ref"))
 
     return {
         "status": "received",
-        "message": "Logs analyzed successfully"
+        "message": "Webhook processed successfully"
     }
 
-app.run(port=8000)
+app.run(host="0.0.0.0", port=8000)
