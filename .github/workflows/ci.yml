@@ -25,16 +25,26 @@ jobs:
 
       - name: Run Tests
         run: |
-          pytest > logs.txt 2>&1
+          pytest 2>&1 | tee ci_output.log
+
+      - name: Upload CI Log Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: ci_output.log
 
       - name: Notify AI Diagnosis Backend
         if: failure()
         run: |
+          LOG_CONTENT=$(cat ci_output.log | sed 's/"/\\"/g')
+
           curl -X POST https://4532-45-112-138-10.ngrok-free.app/api/webhook \
             -H "Content-Type: application/json" \
-            -d '{
-              "source": "github",
-              "repo": "${{ github.repository }}",
-              "run_id": "${{ github.run_id }}",
-              "ref": "${{ github.ref_name }}"
-            }'
+            -d "{
+              \"source\": \"github\",
+              \"repo\": \"${{ github.repository }}\",
+              \"run_id\": \"${{ github.run_id }}\",
+              \"ref\": \"${{ github.ref_name }}\",
+              \"log\": \"$LOG_CONTENT\"
+            }"
