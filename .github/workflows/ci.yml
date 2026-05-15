@@ -25,11 +25,11 @@ jobs:
 
       - name: Run Backend
         run: |
-          python app.py 2>&1 | tee logs.txt
+        python app.py > logs.txt 2>&1
 
       - name: Upload Logs to AI Analyzer
         if: failure()
         run: |
-          curl -X POST http://analysis.com/analyze \
+          curl -X POST https://entryway-calculate-visibly.ngrok-free.dev/analyze \
           -H "Content-Type: text/plain" \
           --data-binary @logs.txt
