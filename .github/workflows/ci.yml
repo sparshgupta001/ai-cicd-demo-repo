@@ -30,11 +30,11 @@ jobs:
       - name: Notify AI Diagnosis Backend
         if: failure()
         run: |
-        curl -X POST https://4532-45-112-138-10.ngrok-free.app/api/webhook \
-        -H "Content-Type: application/json" \
-        -d '{
-        "source": "github",
-        "repo": "${{ github.repository }}",
-        "run_id": "${{ github.run_id }}",
-        "ref": "${{ github.ref_name }}"
-        }'
+          curl -X POST https://4532-45-112-138-10.ngrok-free.app/api/webhook \
+            -H "Content-Type: application/json" \
+            -d '{
+              "source": "github",
+              "repo": "${{ github.repository }}",
+              "run_id": "${{ github.run_id }}",
+              "ref": "${{ github.ref_name }}"
+            }'
