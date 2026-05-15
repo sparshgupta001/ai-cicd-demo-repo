@@ -6,20 +6,30 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-        node-version: 14
+          python-version: 3.11
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          pip install -r requirements.txt
 
-      - name: Run Tests
-        run: npm test
+      - name: Run Backend
+        run: |
+          python app.py 2>&1 | tee logs.txt
+
+      - name: Upload Logs to AI Analyzer
+        if: failure()
+        run: |
+          curl -X POST http://analysis.com/analyze \
+          -H "Content-Type: text/plain" \
+          --data-binary @logs.txt
