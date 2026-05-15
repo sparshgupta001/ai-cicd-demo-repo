@@ -1,8 +1,8 @@
-from math_utils import add_numbers
+from math_utils import add
 
 
 def calculate_total(a, b):
-    return add_numbers(a, b)
+    return add(a, b)
 
 
 if __name__ == "__main__":

@@ -11,17 +11,23 @@ source code, then later propose an automated fix.
 - `tests/test_app.py` contains a pytest test.
 - `.github/workflows/ci.yml` runs the test suite in GitHub Actions.
 
-## Deliberate Failure
+## Demo History
 
-The broken version imports `add_numbers` from `math_utils.py`, but the helper
-file defines `add`. This creates a clear import error:
+This repository has two commits for before/after testing:
+
+1. A broken commit with a deliberate missing import.
+2. A fixed commit that makes the test pass.
+
+In the broken commit, `app.py` imports `add_numbers` from `math_utils.py`, but
+the helper file defines `add`. This creates a clear import error:
 
 ```text
 ImportError: cannot import name 'add_numbers' from 'math_utils'
 ```
 
-This is intentionally simple and realistic for a hackathon demo because the
-logs point directly to the broken import and the source context is small.
+The current version fixes the import so the same test passes. This keeps the
+demo simple and realistic because the failed logs point directly to the broken
+import and the source context is small.
 
 ## Webhook Setup
 
