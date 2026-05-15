@@ -19,6 +19,10 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set PYTHONPATH
+        run: |
+          export PYTHONPATH=$PYTHONPATH:/home/runner/work/ai-cicd-demo-repo/ai-cicd-demo-repo
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
