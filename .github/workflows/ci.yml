@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - demo-intentional-failure
 
 jobs:
   build-and-test:
@@ -25,6 +26,7 @@ jobs:
 
       - name: Run Tests
         run: |
+          set -o pipefail
           pytest 2>&1 | tee ci_output.log
 
       - name: Upload CI Log Artifact
@@ -36,15 +38,23 @@ jobs:
 
       - name: Notify AI Diagnosis Backend
         if: failure()
+        env:
+          CI_ORCHESTRATOR_WEBHOOK_URL: ${{ secrets.CI_ORCHESTRATOR_WEBHOOK_URL }}
         run: |
-          LOG_CONTENT=$(cat ci_output.log | sed 's/"/\\"/g')
+          if [ -z "$CI_ORCHESTRATOR_WEBHOOK_URL" ]; then
+            echo "::error::Set the CI_ORCHESTRATOR_WEBHOOK_URL repository secret to your public backend URL."
+            exit 1
+          fi
 
-          curl -X POST https://4532-45-112-138-10.ngrok-free.app/api/webhook \
+          payload=$(jq -n \
+            --arg source "github" \
+            --arg repo "${{ github.repository }}" \
+            --arg run_id "${{ github.run_id }}" \
+            --arg ref "${{ github.ref_name }}" \
+            '{source: $source, repo: $repo, run_id: $run_id, ref: $ref}')
+
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 \
+            -X POST "${CI_ORCHESTRATOR_WEBHOOK_URL%/}/api/webhook" \
+            -H "ngrok-skip-browser-warning: true" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"source\": \"github\",
-              \"repo\": \"${{ github.repository }}\",
-              \"run_id\": \"${{ github.run_id }}\",
-              \"ref\": \"${{ github.ref_name }}\",
-              \"log\": \"$LOG_CONTENT\"
-            }"
+            -d "$payload"
