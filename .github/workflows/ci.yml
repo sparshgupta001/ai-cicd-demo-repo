@@ -25,6 +25,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           set -o pipefail
           pytest 2>&1 | tee ci_output.log
