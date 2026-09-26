@@ -6,7 +6,5 @@ app = Flask(__name__)
 def home():
     return "Backend Running"
 
-raise Exception("Intentional CI/CD Failure")
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
